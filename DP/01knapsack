@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main(int argc, const char * argv[]) {
+    int n;
+    cin >> n;
+    vector <pair <int,int>> WV; //weight value pairs
+    WV.resize(n);
+    for (int i=0 ; i<n ; i++){
+        cin >> WV[i].first;
+        cin >> WV[i].second;
+    }
+    int cap;
+    cin >> cap;
+    
+    
+    vector <vector <bool>> path;
+    vector <vector <int>> maxprofitDP;
+    maxprofitDP.resize(n);
+    path.resize(n);
+    for (int i=0 ; i<n ; i++){
+        maxprofitDP[i].resize(cap+1);
+        path[i].resize(cap+1);
+    }
+    
+    for (int i=0 ; i<n ; i++){
+        maxprofitDP[i][0] = 0;
+        path[i][0] = 0;
+    }
+    for (int j=1 ; j<=cap ; j++){
+        if (WV[0].first <= cap){
+            maxprofitDP[0][j] = WV[0].second;
+            path[0][j] = 1;
+        }
+        else{
+            maxprofitDP[0][j] = 0;
+            path[0][j] = 0;
+        }
+    }
+    
+    
+    for (int i=1 ; i<n ; i++)
+        for (int j=1 ; j<=cap ; j++){
+            maxprofitDP[i][j] = 0;
+            if (j-WV[i].first >= 0){
+                maxprofitDP[i][j] = maxprofitDP[i-1][j-WV[i].first]+WV[i].second;
+                path[i][j] = 1;
+            }
+            if (maxprofitDP[i][j]< maxprofitDP [i-1][j]){
+                maxprofitDP[i][j] = maxprofitDP [i-1][j];
+                path[i][j] = 0;
+            }
+        }
+    
+    for (int i=0 ; i<n ; i++){
+        for (int j=0 ; j<= cap ; j++)
+            cout << maxprofitDP[i][j] << " ";
+        cout << endl;
+    }
+    cout << maxprofitDP[n-1][cap] << endl;
+    
+    int tempj = cap;
+    int tempi = n-1;
+    while (tempj>0){
+        if (path[tempi][tempj]){
+            cout << tempi << " ";
+            tempj -= WV[tempi].first;
+        }
+        tempi--;
+    }
+    cout << endl;
+    return 0;
+}
