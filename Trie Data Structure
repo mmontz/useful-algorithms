@@ -65,6 +65,7 @@ bool Delete (TrieNode* Node, string word , int index){
     return Node->children.empty();
 }
 
+//assuming that word already exists in the trie
 void RecursiveDelete (TrieNode* root , string word){
     Delete (root, word, 0);
 }
