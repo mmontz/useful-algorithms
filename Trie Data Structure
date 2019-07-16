@@ -1,0 +1,95 @@
+#include <iostream>
+#include <unordered_map>
+#include <string>
+
+using namespace std;
+
+struct TrieNode {
+    unordered_map <char, TrieNode*> children;
+    bool endoftheword;
+    TrieNode (){endoftheword = false;}
+};
+
+
+void RecursiveInsert (TrieNode* Node , string word , int index){
+    if (index == word.length()){
+        Node->endoftheword = true;
+        return;
+    }
+    if (Node->children.find(word[index]) == Node->children.end()){
+        TrieNode * temp = new TrieNode();
+        Node->children[word[index]] = temp;
+    }
+    RecursiveInsert(Node->children[word[index]], word, index+1);
+}
+
+void IterativeInsert (TrieNode* root, string word){
+    TrieNode * cur = root;
+    for (int i=0 ; i<word.length() ; i++){
+        if (cur->children.find(word[i]) == cur->children.end()){
+            TrieNode* temp = new TrieNode();
+            cur->children[word[i]] = temp;
+        }
+        cur = cur->children[word[i]];
+    }
+    cur->endoftheword = true;
+}
+
+bool RecursiveSearch (TrieNode* Node, string word , int index){
+    if (index == word.length())
+        return Node->endoftheword;
+    if (Node->children.find(word[index]) == Node->children.end())
+        return false;
+    return RecursiveSearch(Node->children[word[index]], word, index+1);
+
+}
+
+bool IterativeSearch (TrieNode * root , string word){
+    TrieNode* cur = root;
+    for (int i=0 ; i<word.length() ; i++){
+        cur = cur->children[word[i]];
+        if (!cur)
+            return false;
+    }
+    return cur->endoftheword;
+}
+
+bool Delete (TrieNode* Node, string word , int index){
+    if (index == word.length()){
+        Node->endoftheword= false;
+        return Node->children.empty();
+    }
+    bool restres = Delete (Node->children[word[index]], word, index+1);
+    if (restres)
+        Node->children.erase(word[index]);
+    return Node->children.empty();
+}
+
+void RecursiveDelete (TrieNode* root , string word){
+    Delete (root, word, 0);
+}
+int main(int argc, const char * argv[]) {
+    TrieNode* root = new TrieNode();
+    
+    int n;
+    cin >> n;
+    string inputWord;
+    for (int i=0 ; i<n ; i++){
+        cin >> inputWord;
+        RecursiveInsert(root, inputWord, 0);
+        //IterativeInsert(root, inputWord);
+    }
+
+    
+    cin >> inputWord;
+    cout << IterativeSearch(root, inputWord) << endl;
+    RecursiveDelete (root, inputWord);
+    cout << IterativeSearch(root, inputWord) << endl;
+    
+    cin >> inputWord;
+    cout << RecursiveSearch(root, inputWord , 0) << endl;
+    RecursiveDelete (root, inputWord);
+    cout << RecursiveSearch(root, inputWord , 0) << endl;
+    
+    return 0;
+}
