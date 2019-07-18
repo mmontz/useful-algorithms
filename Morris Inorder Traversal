@@ -1,0 +1,31 @@
+//for algorithm see https://www.youtube.com/watch?v=wGXB9OWhPTg
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x){val = x; left = NULL; right = NULL;}
+};
+
+void MorrisTraversal (TreeNode* root){
+    TreeNode* cur = root;
+    while (cur){
+        if (!cur->left){
+            cout << cur->val << " ";
+            cur = cur->right;
+        }
+        else{
+            TreeNode* temp = cur->left;
+            while (temp->right && temp->right != cur)
+                temp = temp->right;
+            if (temp->right == cur){
+                temp->right = NULL;
+                cout << cur->val << " ";
+                cur = cur->right;
+            }
+            else{
+                temp->right = cur;
+                cur = cur->left;
+            }
+        }
+    }
+}
