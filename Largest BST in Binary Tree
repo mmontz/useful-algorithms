@@ -1,0 +1,44 @@
+// for problem def see https://www.youtube.com/watch?v=4fiDs7CCxkc&t=5s
+// note that largest is in terms of number of nodes in the tree
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x){val = x ; left = NULL; right = NULL;}
+};
+
+struct solutionType {
+    bool isBST;
+    int MaxBSTsize;
+    int Min;
+    int Max;
+    solutionType (bool b , int s , int minval, int maxval){
+        isBST =  b;
+        MaxBSTsize = s;
+        Min = minval;
+        Max = maxval;
+    }
+};
+
+solutionType largestBST (TreeNode* node){
+    if (!node){
+        solutionType temp(true, 0 , INT_MAX , INT_MIN);
+        return temp;
+    }
+    solutionType leftres = largestBST(node->left);
+    solutionType rightres = largestBST(node->right);
+    solutionType temp(false, max (leftres.MaxBSTsize , rightres.MaxBSTsize) , 0 , 0);
+    if (leftres.isBST && rightres.isBST && leftres.Max < node->val && node->val <= rightres.Min){
+        temp.isBST = true;
+        temp.MaxBSTsize = leftres.MaxBSTsize + rightres.MaxBSTsize + 1;
+        temp.Min = min (leftres.Min , node->val);
+        temp.Max = max (rightres.Max , node->val);
+    }
+    return temp;
+}
+
+int main(int argc, const char * argv[]) {
+    largestBST(root);
+    return 0;
+}
