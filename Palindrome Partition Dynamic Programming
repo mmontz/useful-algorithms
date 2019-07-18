@@ -1,0 +1,39 @@
+//for prob def see https://www.youtube.com/watch?v=lDYIvtBVmgo
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main(int argc, const char * argv[]) {
+    string str;
+    cin >> str;
+    vector <vector <int>> minPartition;
+    minPartition.resize(str.length());
+    for (int i=0 ; i<str.length() ; i++)
+        minPartition[i].resize(str.length());
+    
+    for (int i=0 ; i<str.length() ; i++)
+        minPartition[i][i] = 0;
+    
+    for (int d=1 ; d<str.length() ; d++){
+        for (int i=0 ; i<str.length() ; i++){
+            if (i+d<str.length()){
+                minPartition[i][i+d] = str.length();
+                if (str[i] == str[i+d]){
+                    if (i+1 == i+d)
+                        minPartition[i][i+d] = 0;
+                    else
+                        minPartition[i][i+d] = minPartition[i+1][i+d-1] == 0? 0 : minPartition[i][i+d];
+                }
+                for (int j=i ; j<i+d ; j++)
+                    minPartition[i][i+d] = min(minPartition[i][i+d] , minPartition[i][j]+minPartition[j+1][i+d]+1);
+            }
+        }
+    
+    }
+    
+    cout << minPartition[0][str.length()-1] << endl;
+    
+    return 0;
+}
