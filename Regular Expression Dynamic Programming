@@ -1,0 +1,49 @@
+//for the problem def see https://www.youtube.com/watch?v=l3hda49XcDE
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+int main(int argc, const char * argv[]) {
+    string expression;
+    string str;
+    cin >> expression;
+    cin >> str;
+    vector <vector <bool>> ifMatch;
+    ifMatch.resize(expression.length()+1);
+    for (int i=0 ; i< ifMatch.size() ; i++)
+        ifMatch[i].resize(str.size()+1);
+    
+    ifMatch[0][0] = true;
+    for (int j=1 ; j<=str.length() ; j++){
+        ifMatch[0][j] = false;
+    }
+    for (int i=1 ; i<=expression.length() ; i++){
+        if (expression[i] == '*' && i>=2)
+            ifMatch[i][0] = ifMatch[i-2][0];
+        else
+            ifMatch[i][0] = false;
+    }
+    
+    for (int i=1 ; i<=expression.length() ; i++)
+        for (int j=1 ; j<=str.length() ; j++){
+            if (str[j-1] == expression[i-1] || expression[i-1] == '.')
+                ifMatch[i][j] = ifMatch[i-1][j-1];
+            else
+                if (expression[i-1] == '*'){
+                    ifMatch[i][j] = ifMatch[i-2][j];
+                    if (expression[i-2] == str[j-1] || expression[i-2] == '.')
+                        ifMatch[i][j] = ifMatch[i][j] || ifMatch[i][j-1];
+                }
+            else
+                ifMatch[i][j] = false;
+        }
+    
+    for (int i=0 ; i<=expression.length() ; i++){
+        for (int j=0 ; j<=str.length() ; j++)
+            cout << ifMatch[i][j] << " ";
+        cout << endl;
+
+    }
+    return 0;
+}
