@@ -1,0 +1,53 @@
+//for problem def see https://www.youtube.com/watch?v=xouin83ebxE&t=970s
+#include <iostream>
+#include <set>
+using namespace std;
+
+int n;
+set<int> coveredColumns;
+set<pair <int,int>> Qplacement;
+
+
+void printres (){
+    set <pair <int,int>> :: iterator it;
+    for (it= Qplacement.begin() ; it != Qplacement.end () ; it++)
+        cout << it->first << " " << it->second << endl;
+    
+}
+
+bool findPlacement (int row){
+    if (row == n)
+        return true;
+    for (int j=0 ; j<n ; j++){
+        if (coveredColumns.find(j) != coveredColumns.end())
+            continue;
+        bool flag = false;
+        set<pair <int,int>>:: iterator it;
+        for (it = Qplacement.begin () ; it!= Qplacement.end() ; it++){
+            if ((it->first + it->second == row+j) || it->first - it->second == row-j){
+                flag = true;
+                break;
+            }
+        }
+        if (flag)
+            continue;
+        coveredColumns.insert(j);
+        Qplacement.insert ({row,j});
+        bool nextres =findPlacement(row+1);
+        if (!nextres){
+            Qplacement.erase ({row,j});
+            coveredColumns.erase(j);
+        }
+        else
+            return true;
+    }
+    return false;
+}
+
+int main(int argc, const char * argv[]) {
+    cin >>n;
+    findPlacement (0);
+    cout << Qplacement.size()  << endl;
+    printres();
+    return 0;
+}
