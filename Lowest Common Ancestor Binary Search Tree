@@ -1,0 +1,20 @@
+//for prob def see https://www.youtube.com/watch?v=TIoCCStdiFo&t=196s
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x){val = x; left = NULL; right = NULL;}
+};
+
+TreeNode* LCA (TreeNode* node, int n1 , int n2){
+    if (!node)
+        return node;
+    if (node->val == n1 || node->val == n2 || (n1 < node->val && node->val < n2))
+        return node;
+    if (node->val < n1)
+        return LCA (node->right , n1 , n2);
+    return LCA (node->left , n1 , n2);
+}
+
+//call LCA (root, n1 , n2);
