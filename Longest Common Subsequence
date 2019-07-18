@@ -1,0 +1,69 @@
+//for prob def see https://www.youtube.com/watch?v=NnD96abizww&list=PLrmLmBdmIlpsHaNTPP_jHHDx_os9ItYXr&index=2
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+string s1;
+string s2;
+
+int main(int argc, const char * argv[]) {
+    cin >> s1;
+    cin >> s2;
+    vector <vector <char>> path;
+    vector <vector <int>> LCSDP;
+    LCSDP.resize(s1.size()+1);
+    path.resize(s1.size()+1);
+    for (int i=0 ; i<=s1.size() ; i++){
+        LCSDP[i].resize(s2.size()+1);
+        path[i].resize(s2.size()+1);
+    }
+    
+    for (int i=0 ; i<=s1.size() ; i++)
+        LCSDP[i][0] = 0;
+    
+    for (int j=0 ; j<=s2.size() ; j++)
+        LCSDP[0][j] = 0;
+    
+    for (int i=1 ; i<=s1.size() ; i++)
+        for (int j=1 ; j<=s2.size() ; j++){
+            if (s1[i-1] == s2[j-1]){
+                LCSDP[i][j] = LCSDP[i-1][j-1]+1;
+                path[i][j] = 's'; //self
+            }
+            else{
+                if (LCSDP[i-1][j] >= LCSDP[i][j-1]){
+                    LCSDP[i][j] = LCSDP[i-1][j];
+                    path[i][j] = 'u'; // up
+                }
+                else{
+                    LCSDP[i][j] = LCSDP[i][j-1];
+                    path[i][j] = 'l'; // left
+                }
+            }
+        }
+    
+    for (int i=0 ; i<=s1.size() ; i++){
+        for (int j=0 ; j<=s2.size() ; j++)
+            cout << LCSDP[i][j] << " ";
+        cout << endl;
+    }
+    cout << LCSDP[s1.size()][s2.size()] << endl;
+    
+    int tempi= s1.size();
+    int tempj = s2.size();
+    while (tempi>0 && tempj>0){
+        if (path[tempi][tempj] == 's'){
+            cout << s1[tempi-1] << " ";
+            tempi--;
+            tempj--;
+        }
+        else
+            if (path[tempi][tempj] == 'u')
+                tempi--;
+        else
+            tempj--;
+    }
+    cout << endl;
+    return 0;
+}
