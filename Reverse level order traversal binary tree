@@ -1,0 +1,42 @@
+//for prob def see https://www.youtube.com/watch?v=D2bIbWGgvzI
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x){val = x ; left = NULL; right = NULL;}
+};
+
+void ReverseLevelOrderer  (TreeNode* root){
+    stack <vector <TreeNode*>> reverseLevel;
+    queue <TreeNode*> levelnodes;
+    levelnodes.push(root);
+    int curlevel = 1;
+    int nextlevel = 0;
+    while (!levelnodes.empty()){
+        nextlevel = 0;
+        vector <TreeNode*> thislevel;
+        for (int i=0 ; i<curlevel ; i++){
+            TreeNode * temp = levelnodes.front();
+            thislevel.push_back(temp);
+            levelnodes.pop();
+            if (temp->left){
+                levelnodes.push(temp->left);
+                nextlevel++;
+            }
+            if (temp->right){
+                levelnodes.push(temp->right);
+                nextlevel++;
+            }
+        }
+        reverseLevel.push(thislevel);
+        curlevel = nextlevel;
+    }
+    
+    while (!reverseLevel.empty()){
+        vector <TreeNode*> temp = reverseLevel.top();
+        for (int i=0 ; i<temp.size() ; i++)
+            cout << temp[i]->val << " ";
+        cout << endl;
+        reverseLevel.pop();
+    }
+}
