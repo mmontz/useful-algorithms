@@ -1,0 +1,60 @@
+//for algorithm details see https://www.youtube.com/watch?v=ID00PMy0-vE
+#include <iostream>
+#include <unordered_map>
+
+using namespace std;
+
+struct Node;
+unordered_map<int, Node*> NumtoNode;
+
+struct Node {
+    int rank;
+    int val;
+    Node* parent;
+    Node (int x){val = x; rank = 0;}
+};
+
+void makeset (int val){
+    Node* node = new Node (val);
+    node->parent = node;
+    NumtoNode[val] = node;
+}
+
+Node* findset (Node* node){
+    if (node->parent == node)
+        return node->parent;
+    node->parent = findset (node->parent);
+    return node->parent;
+}
+
+int findset (int val){
+    return findset(NumtoNode[val])->val;
+}
+
+void Union (int n1 , int n2){
+    Node* node1 = findset (NumtoNode[n1]);
+    Node* node2 = findset (NumtoNode[n2]);
+    if (node1->val == node2->val)
+        return;
+    if (node1->rank >= node2->rank){
+        node1->rank= node1->rank == node2->rank? node1->rank+1 : node1->rank;
+        node2->parent = node1;
+    }
+    else
+        node1->parent = node2;
+}
+
+int main(int argc, const char * argv[]) {
+    makeset (1);
+    makeset (2);
+    makeset (3);
+    makeset (4);
+    Union(1,2);
+    Union(2,3);
+    cout << findset (3) << endl;
+    cout << findset (4) << endl;
+    Union(4, 2);
+    cout << findset (4) << endl;
+
+    return 0;
+}
