@@ -1,0 +1,104 @@
+//Markov Chain algorithm for generating random paragraphs from a given text.
+#include <iostream>
+#include <string>
+#include <map>
+#include <vector>
+#include <fstream>
+#include <stdlib.h>
+#include <queue>
+#include <sstream>
+
+
+using namespace std;
+
+int threshold = 100;
+string dummyS = "NULL";
+int N;
+int p;
+string inputfilename;
+string outputfilename = "output.txt";
+map <queue <string>, map <string, int>> PreftoSufCount;
+map <queue <string> , int> TotalSufofPref;
+queue <string> StartingPref;
+
+
+void ProcessInput (){
+    queue <string> TempPref;
+    for (int i=0 ; i<p ; i++)
+        TempPref.push(dummyS);
+    
+    StartingPref = TempPref; // the prefix to later start the algorithm with
+
+    ifstream file;
+    file.open (inputfilename);
+    
+    string line;
+    string intermediate;
+
+    while (getline (file, line)){
+        stringstream check1(line);
+        while(getline(check1, intermediate, ' ')){
+            PreftoSufCount[TempPref][intermediate]++;
+            TotalSufofPref[TempPref]++;
+            TempPref.pop();
+            TempPref.push(intermediate);
+        }
+    }
+    if (!TempPref.empty()){
+        TempPref.pop();
+        TempPref.push(intermediate);
+        PreftoSufCount[TempPref][dummyS]++;
+    }
+    file.close();
+}
+
+void GenerateParagraphs (){
+    queue <string> CurPref;
+
+    
+    if (PreftoSufCount.empty()){
+        cout << "your file is empty" << endl;
+        return;
+    }
+    ofstream myfile;
+    myfile.open (outputfilename);
+    string suffix;
+    int counter = 0;
+    for (int i=0 ; i<N ; i++){
+        CurPref = StartingPref;
+        suffix = PreftoSufCount[CurPref].begin()->first;
+        while (counter < threshold && suffix != dummyS){
+            double r = ((double) rand() / (RAND_MAX));
+            double prob = 0;
+            map <string , int>:: iterator it;
+            for (it = PreftoSufCount[CurPref].begin() ; it != PreftoSufCount[CurPref].end () ; it++){
+                prob += (double)it->second/(double)TotalSufofPref[CurPref];
+                if (r<= prob){
+                    counter++;
+                    suffix = it->first;
+                    myfile << suffix << " ";
+                    CurPref.pop();
+                    CurPref.push(suffix);
+                    break;
+                }
+            }
+        }
+        myfile << "\n";
+    }
+    
+    myfile << "number of unique prefix phrases " << PreftoSufCount.size() << "\n";
+    myfile.close();
+
+}
+
+void readinput(){
+    cin >> inputfilename;
+    cin >> p;
+    cin >> N;
+}
+int main(int argc, const char * argv[]) {
+    readinput();
+    ProcessInput();
+    GenerateParagraphs ();
+    return 0;
+}
