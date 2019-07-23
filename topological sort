@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <stack>
+#include <map>
+using namespace std;
+
+struct Vertex {
+    int index;
+    vector <int> neighbors;
+    Vertex (int x){index = x;}
+};
+
+void topologicalSort (Vertex *v, set <int>& visited , stack <int>& order , map <int , Vertex*>& indextoV){
+    visited.insert(v->index);
+    for (int i=0 ; i<v->neighbors.size() ; i++){
+        if (visited.find(v->neighbors[i]) == visited.end())
+           topologicalSort(indextoV[v->neighbors[i]], visited, order , indextoV);
+    }
+    order.push(v->index);
+}
+ 
+
+void printres (stack <int> & order){
+    while (!order.empty()){
+        cout << order.top() << " ";
+        order.pop();
+    }
+    cout << endl;
+}
+int main(int argc, const char * argv[]) {
+    stack <int> order;
+    set <int> visited;
+    map <int , Vertex*> indextoV;
+
+    int n;
+    cin >> n;
+    int m;
+    int temp;
+    for (int i=0 ; i<n ; i++){
+        Vertex *v = new Vertex(i);
+        cout << "how many neighbors does this node have?" << endl;
+        cin >> m;
+        for (int j=0 ; j<m ; j++){
+            cin >> temp;
+            v->neighbors.push_back(temp);
+        }
+        indextoV[i] = v;
+    }
+    for (int i=0 ; i<n ; i++){
+        if (visited.find(i) == visited.end())
+            topologicalSort (indextoV[i] , visited , order , indextoV);
+    }
+    
+    printres (order);
+    return 0;
+}
