@@ -1,0 +1,123 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <stack>
+#include <map>
+#include <unordered_set>
+#include <unordered_map>
+using namespace std;
+
+vector <pair <int, int>> minheap;
+unordered_set <int> visited;
+unordered_map <int , int> locationinHeap;
+unordered_map <int,int> spanningtree; // storing the edges
+struct Vertex;
+map <int , Vertex*> indextoV;
+
+struct Vertex {
+    int index;
+    vector <pair <int, int>> neighborsweights;
+    Vertex (int x){index = x;}
+};
+
+
+void decreaseinHeap (int index , int newval){
+    minheap[index].second = newval;
+    while (index>0 && minheap[(index-1)/2].second > minheap[index].second){
+        swap (locationinHeap[minheap[(index-1)/2].first] , locationinHeap [minheap[index].first]);
+        swap (minheap[(index-1)/2] , minheap[index]);
+        index = (index-1)/2;
+    }
+}
+
+void heapify (int index){
+    int smallest;
+    int l;
+    int r;
+    while (true){
+        smallest = index;
+        l = index*2+1;
+        r = index*2+2;
+        if (l < minheap.size() && minheap[l].second < minheap[smallest].second)
+            smallest = l;
+        if (r < minheap.size() && minheap[r].second < minheap[smallest].second)
+            smallest = r;
+        if (smallest == index)
+            break;
+        swap (locationinHeap[minheap[smallest].first] , locationinHeap[minheap[index].first]);
+        swap (minheap[smallest] , minheap[index]);
+        index = smallest;
+    }
+}
+
+
+void addtoheap (pair <int,int> nodedist){
+    minheap.push_back(nodedist);
+    int index= minheap.size()-1;
+    locationinHeap [nodedist.first] = index;
+    decreaseinHeap(index, nodedist.second);
+}
+
+pair <int, int> extractMin (){
+    pair <int,int> Minpair = minheap[0];
+    locationinHeap.erase(minheap[0].first);
+    if (minheap.size() == 1){
+        minheap.clear();
+        return Minpair;
+    }
+    int index = minheap.size()-1;
+    locationinHeap[minheap[index].first] = 0;
+    minheap[0] = minheap[index];
+    minheap.erase(minheap.begin()+ index);
+    heapify (0);
+    return Minpair;
+}
+
+void Prim (){
+    while (!minheap.empty()){
+        pair <int , int> Minpair = extractMin ();
+        Vertex *v = indextoV[Minpair.first];
+        for (int i=0 ; i<v->neighborsweights.size() ; i++){
+            if (locationinHeap.find(v->neighborsweights[i].first) == locationinHeap.end())
+                continue;
+            int neighborLocation =locationinHeap[v->neighborsweights[i].first];
+            if (minheap[neighborLocation].second > v->neighborsweights[i].second){
+                decreaseinHeap(neighborLocation, v->neighborsweights[i].second);
+                spanningtree[v->neighborsweights[i].first] = Minpair.first;
+            }
+        }
+    }
+}
+
+void PrintTree (){
+    unordered_map<int,int>:: iterator it;
+    for (it = spanningtree.begin() ; it!= spanningtree.end() ; it++)
+        cout << it->first << " " << it->second << endl;
+}
+
+int main(int argc, const char * argv[]) {
+    int n;
+    cin >> n;
+    int m;
+    int neighbor;
+    int w;
+    for (int i=0 ; i<n ; i++){
+        Vertex *v = new Vertex(i);
+        cout << "how many neighbors does this node have?" << endl;
+        cin >> m;
+        for (int j=0 ; j<m ; j++){
+            cin >> neighbor;
+            cin >> w;
+            v->neighborsweights.push_back({neighbor , w});
+        }
+        indextoV[i] = v;
+    }
+    
+    for (int i=0 ; i<n ; i++)
+        addtoheap ({i, INT_MAX});
+    
+    decreaseinHeap (locationinHeap[0] , 0);
+    Prim ();
+    PrintTree ();
+    return 0;
+}
