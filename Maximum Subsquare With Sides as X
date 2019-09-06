@@ -1,0 +1,69 @@
+// for problem definition and algorithm see the below link
+// https://www.youtube.com/watch?v=vi_1eHCsR9A&list=PLrmLmBdmIlpsHaNTPP_jHHDx_os9ItYXr&index=41
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+int main(int argc, const char * argv[]) {
+    int n ;
+    cin >> n;
+    vector <vector <int>> matrix;
+    matrix.resize(n);
+    for (int i=0 ; i<n ; i++)
+        matrix[i].resize(n);
+    
+    for (int i=0 ; i<n ; i++)
+        for (int j=0 ; j<n ; j++)
+            cin >> matrix[i][j];
+    
+    vector <vector <pair <int, int>>> DP;
+    DP.resize(n);
+    for (int i=0 ; i<n ; i++)
+        DP[i].resize(n);
+    
+    if (matrix[0][0] == 0)
+        DP[0][0] = {0,0};
+    else
+        DP[0][0] = {1,1};
+    
+    for (int i=1 ; i<n ; i++){
+        if (matrix[0][i] == 0)
+            DP[0][i] = {0,0};
+        else
+            DP[0][i] = {1,DP[0][i-1].second+1};
+    }
+    
+    for (int i=1 ; i<n ; i++){
+        if (matrix[i][0] == 0)
+            DP[i][0] = {0,0};
+        else
+            DP[i][0] = {DP[i-1][0].second+1, 1};
+    }
+    
+    for (int i=1 ; i<n ; i++){
+        for (int j=1 ; j<n ; j++){
+            if (matrix[i][j] == 0)
+                DP[i][j] = {0,0};
+            else
+                DP[i][j] = {DP[i-1][j].first+1 , DP[i][j-1].second+1};
+        }
+    }
+    
+    int MaxS = 0;
+    
+    for (int i=n-1 ; i>=0 ; i--){
+        for (int j=n-1 ; j>=0 ; j--){
+            for (int k=min (DP[i][j].first , DP[i][j].second) ; k>MaxS ; k--){
+                if (DP[i-k+1][j].second >= k && DP[i][j-k+1].first >=k){
+                    MaxS = k;
+                    break;
+                }
+            }
+        }
+    }
+    
+    
+    cout << MaxS << endl;
+    return 0;
+}
