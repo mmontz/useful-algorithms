@@ -11,11 +11,15 @@ class solution {
         if (!root)
             return {true , 0};
         pair <bool, int> leftres = BalanceandHeight(root->left);
+        if (leftres.first == false)
+            return {false, -1};
         pair <bool, int> rightres = BalanceandHeight(root->right);
+        if (rightres.first == false)
+            return {false, -1};
         return {leftres.first && rightres.first && abs (leftres.second-rightres.second) <= 1, max (leftres.second , rightres.second) + 1};
     }
     bool isbalanced (TreeNode* root){
         return BalanceandHeight(root).first;
 
     }
-}; 
+};
