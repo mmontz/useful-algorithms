@@ -1,0 +1,65 @@
+//List of Depths of a binary tree
+
+class TreeNode {
+public:
+    TreeNode* left;
+    TreeNode* right;
+    int val;
+    TreeNode (int x){val = x; left = NULL; right = NULL;}
+};
+
+class ListNode {
+public:
+    ListNode * next;
+    int val;
+    ListNode (int x){val = x; next = NULL;};
+};
+
+class LinkedList {
+public:
+    ListNode* head;
+    LinkedList (){head = NULL;};
+    ListNode* insert (int x){
+        ListNode* newListNode = new ListNode(x);
+        if (!head)
+            head = newListNode;
+        else{
+            newListNode->next = head;
+            head = newListNode;
+        }
+        return head;
+    }
+};
+
+class solution {
+public:
+    vector <LinkedList*> findLists (TreeNode* root){
+        vector <LinkedList*> res;
+        if (!root)
+            return res;
+        queue <TreeNode*> treenodes;
+        int curlevel = 1;
+        int nextlevel = 0;
+        treenodes.push(root);
+        while (!treenodes.empty()){
+            nextlevel = 0;
+            LinkedList* newlist = new LinkedList();
+            for (int i=0 ; i<curlevel ; i++){
+                TreeNode* curnode = treenodes.front();
+                treenodes.pop();
+                newlist->insert(curnode->val);
+                if (curnode->left){
+                    treenodes.push(curnode->left);
+                    nextlevel++;
+                }
+                if (curnode->right){
+                    treenodes.push(curnode->right);
+                    nextlevel++;
+                }
+            }
+            res.push_back(newlist);
+            curlevel = nextlevel;
+        }
+        return res;
+    }
+};
