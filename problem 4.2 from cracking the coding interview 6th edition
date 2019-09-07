@@ -20,4 +20,8 @@ public:
         root->right = MinimalTree (arr, mid+1 , e);
         return root;
     }
+    
+    Node* CreateMinimalTree (vector <int> & arr){
+        return MinimalTree(arr, 0, arr.size()-1);
+    }
 };
