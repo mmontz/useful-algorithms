@@ -1,0 +1,21 @@
+class TreeNode {
+public:
+    TreeNode* left;
+    TreeNode* right;
+    int val;
+    TreeNode (int x){val = x; left = NULL; right = NULL;}
+};
+
+class solution {
+    pair <bool, int> BalanceandHeight (TreeNode* root){
+        if (!root)
+            return {true , 0};
+        pair <bool, int> leftres = BalanceandHeight(root->left);
+        pair <bool, int> rightres = BalanceandHeight(root->right);
+        return {leftres.first && rightres.first && abs (leftres.second-rightres.second) <= 1, max (leftres.second , rightres.second) + 1};
+    }
+    bool isbalanced (TreeNode* root){
+        return BalanceandHeight(root).first;
+
+    }
+}; 
