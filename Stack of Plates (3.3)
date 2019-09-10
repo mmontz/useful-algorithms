@@ -1,3 +1,16 @@
+//
+//  main.cpp
+//  cracking2
+//
+//  Created by Mahshid Montazer on 9/10/19.
+//  Copyright © 2019 Mahshid Montazer. All rights reserved.
+//
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
 class SetOfStacks {
     int threshold;
     class Stack{
@@ -76,5 +89,15 @@ class SetOfStacks {
         AllStacks[index].POP();
         for (int i=index+1 ; i<AllStacks.size() ; i++)
             ShiftToLeft (i);
+        
+        if (AllStacks[AllStacks.size()-1].isempty())
+            AllStacks.erase(AllStacks.begin()+AllStacks.size()-1);
     }
 };
+
+class solution{};
+int main(int argc, const char * argv[]) {
+    // insert code here...
+    std::cout << "Hello, World!\n";
+    return 0;
+}
