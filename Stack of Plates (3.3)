@@ -24,6 +24,17 @@ class SetOfStacks {
         int SIZE(){
             return S.size();
         }
+        void rewrite(int index1 , int index2){
+            if (index1<0 || index2<0 || index1 >= S.size() || index2>= S.size())
+                return;
+            S[index1] = S[index2];
+        }
+        
+        int atIndex (int i){
+            if (i<0 || i >= S.size())
+                return -1;
+            return S[i];
+        }
     };
     
     vector <Stack> AllStacks;
@@ -51,7 +62,19 @@ class SetOfStacks {
         return AllStacks[AllStacks.size()-1].TOP();
     }
     
-    void PopAt (int index){
+    void ShiftToLeft (int index){
+        AllStacks[index-1].PUSH(AllStacks[index].atIndex(0)); //bottom
+        for (int i=1 ; i<AllStacks[index].SIZE() ; i++){
+            AllStacks[index].rewrite(i-1, i);
+        }
         AllStacks[index].POP();
+    }
+    
+    void PopAt (int index){
+        if (!(0<=index && index < AllStacks.size()))
+            return;
+        AllStacks[index].POP();
+        for (int i=index+1 ; i<AllStacks.size() ; i++)
+            ShiftToLeft (i);
     }
 };
