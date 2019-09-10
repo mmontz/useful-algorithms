@@ -1,0 +1,57 @@
+class SetOfStacks {
+    int threshold;
+    class Stack{
+        vector <int> S;
+    public:
+        void POP (){
+            if (S.empty())
+                return;
+            S.erase(S.begin() + S.size()-1);
+        }
+        void PUSH (int x){
+            S.push_back(x);
+        }
+        int TOP(){
+            if (S.empty())
+                return -1;
+            return S[S.size()-1];
+        }
+        bool isempty (){
+            if (S.empty())
+                return true;
+            return false;
+        }
+        int SIZE(){
+            return S.size();
+        }
+    };
+    
+    vector <Stack> AllStacks;
+    SetOfStacks (int x){threshold = x;};
+
+    void POP (){
+        if (AllStacks.empty())
+            return;
+        AllStacks[AllStacks.size()-1].POP();
+        if (AllStacks[AllStacks.size()-1].isempty())
+            AllStacks.erase(AllStacks.begin()+ AllStacks.size()-1);
+    }
+    void PUSH (int x){
+        if (AllStacks.empty() || AllStacks[AllStacks.size()-1].SIZE() >= threshold){
+            Stack newstack;
+            newstack.PUSH(x);
+            AllStacks.push_back(newstack);
+        }
+        else
+            AllStacks[AllStacks.size()-1].PUSH(x);
+    }
+    int TOP (){
+        if (AllStacks.empty())
+            return -1;
+        return AllStacks[AllStacks.size()-1].TOP();
+    }
+    
+    void PopAt (int index){
+        AllStacks[index].POP();
+    }
+};
