@@ -1,0 +1,83 @@
+//for problem definition and algorithm see:
+// https://www.youtube.com/watch?v=Jg4E4KZstFE&list=PLrmLmBdmIlpv_jNDXtJGYTPNQ2L1gdHxu&index=7
+
+
+ struct TreeNode {
+      int val;
+      TreeNode *left;
+      TreeNode *right;
+      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+
+class Solution {
+public:
+    bool hasPathsum (TreeNode* root, int sum , vector <int>& path){
+        if (!root)
+            return false;
+        if (!root->left && !root->right){
+            if (sum == root->val){
+                path.push_back(root->val);
+                return true;
+            }
+            return false;
+        }
+        path.push_back(root->val);
+        if (hasPathsum (root->left , sum-root->val , path))
+            return true;
+        if (hasPathsum (root->right , sum-root->val , path))
+            return true;
+        path.erase(path.begin()+path.size()-1);
+        return false;
+    }
+    bool hasPathSum(TreeNode* root, int sum) {
+        vector <int> res;
+        bool finalres = hasPathsum (root, sum , res);
+        for (int i=0 ; i<res.size() ; i++)
+            cout << res[i] << " ";
+        cout << endl;
+        return finalres;
+    }
+};
+
+
+///////////////////// or similarly:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasPathsum (TreeNode* root, int sum , vector <int> path){
+        if (!root)
+            return false;
+        if (!root->left && !root->right){
+            if (sum == root->val){
+                path.push_back(root->val);
+                for (int i=0 ; i<path.size() ; i++)
+                    cout << path[i] << " ";
+                cout << endl;
+                return true;
+            }
+            return false;
+        }
+        path.push_back(root->val);
+        if (hasPathsum (root->left , sum-root->val , path))
+            return true;
+        if (hasPathsum (root->right , sum-root->val , path))
+            return true;
+        return false;
+    }
+    bool hasPathSum(TreeNode* root, int sum) {
+        vector <int> res;
+        bool finalres = hasPathsum (root, sum , res);
+        for (int i=0 ; i<res.size() ; i++)
+            cout << res[i] << " ";
+        cout << endl;
+        return finalres;
+    }
+};
