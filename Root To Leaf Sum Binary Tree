@@ -73,11 +73,7 @@ public:
         return false;
     }
     bool hasPathSum(TreeNode* root, int sum) {
-        vector <int> res;
         bool finalres = hasPathsum (root, sum , res);
-        for (int i=0 ; i<res.size() ; i++)
-            cout << res[i] << " ";
-        cout << endl;
         return finalres;
     }
 };
